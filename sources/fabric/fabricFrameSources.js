@@ -188,7 +188,7 @@ export async function linearGradientFrameSource({ width, height, params }) {
 }
 
 export async function subtitleFrameSource({ width, height, params }) {
-  const { text, textColor = '#ffffff', backgroundColor = 'rgba(0,0,0,0.3)', fontFamily = defaultFontFamily, delay = 0, speed = 1 } = params;
+  const { text, textColor = '#ffffff', backgroundColor = 'rgba(0,0,0,0.3)', fontFamily = defaultFontFamily, delay = 0, speed = 1, fontSize = 0.05 } = params;
 
   async function onRender(progress, canvas) {
     const easedProgress = easeOutExpo(Math.max(0, Math.min((progress - delay) * speed, 1)));
@@ -200,7 +200,7 @@ export async function subtitleFrameSource({ width, height, params }) {
       fill: textColor,
       fontFamily,
 
-      fontSize: min / 20,
+      fontSize: min * fontSize,
       textAlign: 'left',
       width: width - padding * 2,
       originX: 'center',
@@ -234,6 +234,8 @@ export async function imageOverlayFrameSource({ params, width, height }) {
 
   const { left, top, originX, originY } = getPositionProps({ position, width, height });
 
+  console.log('Position', getPositionProps({ position, width, height }), 'width', width, 'height', height);
+
   const img = new fabric.Image(imgData, {
     originX,
     originY,
@@ -244,8 +246,9 @@ export async function imageOverlayFrameSource({ params, width, height }) {
   async function onRender(progress, canvas) {
     const scaleFactor = getZoomParams({ progress, zoomDirection, zoomAmount });
 
-    const translationParams = getTranslationParams({ progress, zoomDirection, zoomAmount });
-    img.left = width / 2 + translationParams;
+    //const translationParams = getTranslationParams({ progress, zoomDirection, zoomAmount });
+    //img.left = width / 2 + translationParams;
+    //console.log('translationParams', translationParams, 'img.left', img.left);
 
     if (relWidth != null) {
       img.scaleToWidth(relWidth * width * scaleFactor);
@@ -263,7 +266,7 @@ export async function imageOverlayFrameSource({ params, width, height }) {
 }
 
 export async function titleFrameSource({ width, height, params }) {
-  const { text, textColor = '#ffffff', fontFamily = defaultFontFamily, position = 'center', zoomDirection = 'in', zoomAmount = 0.2, fontSize = 0.1 } = params;
+  const { text, textColor = '#ffffff', fontFamily = defaultFontFamily, strokeColor = '#000000', strokeWidth = 0, position = 'center', zoomDirection = 'in', zoomAmount = 0.2, fontSize = 0.1 } = params;
 
   async function onRender(progress, canvas) {
     // console.log('progress', progress);
@@ -278,6 +281,8 @@ export async function titleFrameSource({ width, height, params }) {
 
     const textBox = new fabric.Textbox(text, {
       fill: textColor,
+      stroke: strokeColor, // Set the stroke color
+      strokeWidth: strokeWidth, // Set the stroke width
       fontFamily,
       fontSize: pixelFontSize,
       textAlign: 'center',
@@ -304,12 +309,12 @@ export async function titleFrameSource({ width, height, params }) {
 }
 
 export async function newsTitleFrameSource({ width, height, params }) {
-  const { text, textColor = '#ffffff', backgroundColor = '#d02a42', fontFamily = defaultFontFamily, delay = 0, speed = 1 } = params;
+  const { text, textColor = '#ffffff', backgroundColor = '#d02a42', strokeColor = '#000000', strokeWidth = 0, fontFamily = defaultFontFamily, delay = 0, speed = 1, fontSize = 0.05 } = params;
 
   async function onRender(progress, canvas) {
     const min = Math.min(width, height);
 
-    const fontSize = Math.round(min * 0.05);
+    const pixelFontSize = Math.round(min * fontSize);
 
     const easedBgProgress = easeOutExpo(Math.max(0, Math.min((progress - delay) * speed * 3, 1)));
     const easedTextProgress = easeOutExpo(Math.max(0, Math.min((progress - delay - 0.02) * speed * 4, 1)));
@@ -325,8 +330,10 @@ export async function newsTitleFrameSource({ width, height, params }) {
       left: paddingV + (easedTextProgress - 1) * width,
       fill: textColor,
       opacity: easedTextOpacityProgress,
+      stroke: strokeColor, // Set the stroke color
+      strokeWidth: strokeWidth, // Set the stroke width
       fontFamily,
-      fontSize,
+      fontSize: pixelFontSize,
       charSpacing: width * 0.1,
     });
 
@@ -418,3 +425,4 @@ export async function slideInTextFrameSource({ width, height, params: { position
 export async function customFabricFrameSource({ canvas, width, height, params }) {
   return params.func(({ width, height, fabric, canvas, params }));
 }
+
