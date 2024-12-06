@@ -210,17 +210,19 @@ export async function subtitleFrameSource({ width, height, params }) {
       opacity: easedProgress,
     });
 
-    const rect = new fabric.Rect({
-      left: 0,
-      width,
-      height: textBox.height + padding * 2,
-      top: height,
-      originY: 'bottom',
-      fill: backgroundColor,
-      opacity: easedProgress,
-    });
+    if (backgroundColor != "off") {
+      const rect = new fabric.Rect({
+        left: 0,
+        width,
+        height: textBox.height + padding * 2,
+        top: height,
+        originY: 'bottom',
+        fill: backgroundColor,
+        opacity: easedProgress,
+      });
 
-    canvas.add(rect);
+      canvas.add(rect);
+    }
     canvas.add(textBox);
   }
 
@@ -266,11 +268,13 @@ export async function imageOverlayFrameSource({ params, width, height }) {
 }
 
 export async function titleFrameSource({ width, height, params }) {
-  const { text, textColor = '#ffffff', fontFamily = defaultFontFamily, strokeColor = '#000000', strokeWidth = 0, position = 'center', zoomDirection = 'in', zoomAmount = 0.2, fontSize = 0.1 } = params;
+  const { text, textColor = '#ffffff', fontFamily = defaultFontFamily, delay = 0, strokeColor = '#000000', strokeWidth = 0, position = 'center', zoomDirection = 'in', zoomAmount = 0.2, fontSize = 0.1 } = params;
 
   async function onRender(progress, canvas) {
     // console.log('progress', progress);
-
+    if (progress < delay) {
+      return;
+    }
     const min = Math.min(width, height);
 
     const pixelFontSize = Math.round(min * fontSize); //Scale fontSize to smaller of width / height. 
