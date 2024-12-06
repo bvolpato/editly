@@ -1,4 +1,4 @@
-FROM jrottenberg/ffmpeg:4.3.1-ubuntu1804
+FROM jrottenberg/ffmpeg:7.1-ubuntu2404
 
 WORKDIR /app
 
@@ -22,9 +22,9 @@ RUN apt-get update \
     && apt-get -y autoclean
 
 # nvm environment variables
-ENV NVM_VERSION 0.37.2
+ENV NVM_VERSION 0.40.0
 ENV NVM_DIR /usr/local/nvm
-ENV NODE_VERSION 14.4.0
+ENV NODE_VERSION 16.20.2
 
 # install nvm
 # https://github.com/creationix/nvm#install-script
