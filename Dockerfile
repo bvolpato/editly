@@ -9,7 +9,13 @@ ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt-get update && apt-get install -y \
     dumb-init \
-    xvfb
+    xvfb \
+    libcairo2-dev \
+    libjpeg-dev \
+    libpango1.0-dev \
+    libgif-dev \
+    build-essential \
+    g++
 
 # Source: https://gist.github.com/remarkablemark/aacf14c29b3f01d6900d13137b21db3a
 # replace shell with bash so we can source files
@@ -56,6 +62,8 @@ COPY . /app
 
 # Ensure `editly` binary available in container
 RUN npm link
+
+RUN cd node_modules/canvas && npm rebuild canvas && npm rebuild canvas --update-binary
 
 ENTRYPOINT ["/usr/bin/dumb-init", "--", "xvfb-run", "--server-args", "-screen 0 1280x1024x24 -ac"]
 CMD [ "editly" ]
