@@ -1,4 +1,4 @@
-FROM jrottenberg/ffmpeg:7.1-ubuntu2404
+FROM jrottenberg/ffmpeg:7.1-nvidia2204
 
 WORKDIR /app
 
