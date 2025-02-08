@@ -1,21 +1,42 @@
-FROM jrottenberg/ffmpeg:7.1-nvidia2204
+FROM nvidia/cuda:11.8.0-devel-ubuntu22.04
 
 WORKDIR /app
 
 # Ensures tzinfo doesn't ask for region info.
-ENV DEBIAN_FRONTEND noninteractive
+ENV DEBIAN_FRONTEND=noninteractive
+ENV NVIDIA_DRIVER_CAPABILITIES=video,compute,utility
 
 ## INSTALL NODE VIA NVM
 
 RUN apt-get update && apt-get install -y \
     dumb-init \
     xvfb \
+    libfribidi-dev \
     libcairo2-dev \
     libjpeg-dev \
-    libpango1.0-dev \
     libgif-dev \
     build-essential \
-    g++
+    g++ \
+    ffmpeg
+
+RUN apt-get install -y fontconfig \
+    fonts-liberation \
+    fonts-dejavu \
+    fonts-dejavu-core \
+    fonts-dejavu-extra \
+    libfontconfig1 \
+    libfontconfig1-dev \
+    libpango1.0-dev
+
+RUN apt-get install -y libopencore-amrnb-dev \ 
+    libopencore-amrnb0 \
+    libopencore-amrwb-dev \
+    libopencore-amrwb0 \
+    libx264-dev \
+    libnuma1 \
+    libx265-199 \
+    libx265-dev \
+    libpng-dev
 
 # Source: https://gist.github.com/remarkablemark/aacf14c29b3f01d6900d13137b21db3a
 # replace shell with bash so we can source files
@@ -28,9 +49,9 @@ RUN apt-get update \
     && apt-get -y autoclean
 
 # nvm environment variables
-ENV NVM_VERSION 0.40.0
-ENV NVM_DIR /usr/local/nvm
-ENV NODE_VERSION 16.20.2
+ENV NVM_VERSION=0.40.0
+ENV NVM_DIR=/usr/local/nvm
+ENV NODE_VERSION=16.20.2
 
 # install nvm
 # https://github.com/creationix/nvm#install-script
