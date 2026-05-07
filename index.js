@@ -168,12 +168,15 @@ async function Editly(config = {}) {
     return newAcc;
   }, 0);
 
-  const { runTransitionOnFrame: runGlTransitionOnFrame } = GlTransitions({ width, height, channels });
+  let runGlTransitionOnFrame;
 
   function runTransitionOnFrame({ fromFrame, toFrame, progress, transitionName, transitionParams }) {
     // A dummy transition can be used to have an audio transition without a video transition
     // (Note: You will lose a portion from both clips due to overlap)
     if (transitionName === 'dummy') return progress > 0.5 ? toFrame : fromFrame;
+    if (!runGlTransitionOnFrame) {
+      ({ runTransitionOnFrame: runGlTransitionOnFrame } = GlTransitions({ width, height, channels }));
+    }
     return runGlTransitionOnFrame({ fromFrame, toFrame, progress, transitionName, transitionParams });
   }
 

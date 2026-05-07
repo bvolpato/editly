@@ -1,4 +1,4 @@
-import type { fabric as Fabric } from 'fabric';
+import type * as Fabric from 'fabric';
 
 /**
  * Edit and render videos.

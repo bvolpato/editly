@@ -1,4 +1,4 @@
-import { fabric } from 'fabric';
+import * as fabric from 'fabric/node';
 import fileUrl from 'file-url';
 
 import { getRandomGradient, getRandomColors } from '../../colors.js';
@@ -10,7 +10,7 @@ import { blurImage } from '../fabric.js';
 
 const defaultFontFamily = 'sans-serif';
 
-const loadImage = async (pathOrUrl) => new Promise((resolve) => fabric.util.loadImage(isUrl(pathOrUrl) ? pathOrUrl : fileUrl(pathOrUrl), resolve));
+const loadImage = async (pathOrUrl) => fabric.util.loadImage(isUrl(pathOrUrl) ? pathOrUrl : fileUrl(pathOrUrl));
 
 function getZoomParams({ progress, zoomDirection, zoomAmount }) {
   let scaleFactor = 1;
@@ -210,7 +210,7 @@ export async function subtitleFrameSource({ width, height, params }) {
       opacity: easedProgress,
     });
 
-    if (backgroundColor != "off") {
+    if (backgroundColor !== 'off') {
       const rect = new fabric.Rect({
         left: 0,
         width,
@@ -248,9 +248,9 @@ export async function imageOverlayFrameSource({ params, width, height }) {
   async function onRender(progress, canvas) {
     const scaleFactor = getZoomParams({ progress, zoomDirection, zoomAmount });
 
-    //const translationParams = getTranslationParams({ progress, zoomDirection, zoomAmount });
-    //img.left = width / 2 + translationParams;
-    //console.log('translationParams', translationParams, 'img.left', img.left);
+    // const translationParams = getTranslationParams({ progress, zoomDirection, zoomAmount });
+    // img.left = width / 2 + translationParams;
+    // console.log('translationParams', translationParams, 'img.left', img.left);
 
     if (relWidth != null) {
       img.scaleToWidth(relWidth * width * scaleFactor);
@@ -277,7 +277,7 @@ export async function titleFrameSource({ width, height, params }) {
     }
     const min = Math.min(width, height);
 
-    const pixelFontSize = Math.round(min * fontSize); //Scale fontSize to smaller of width / height. 
+    const pixelFontSize = Math.round(min * fontSize); // Scale fontSize to smaller of width / height.
 
     const scaleFactor = getZoomParams({ progress, zoomDirection, zoomAmount });
 
@@ -286,7 +286,7 @@ export async function titleFrameSource({ width, height, params }) {
     const textBox = new fabric.Textbox(text, {
       fill: textColor,
       stroke: strokeColor, // Set the stroke color
-      strokeWidth: strokeWidth, // Set the stroke width
+      strokeWidth, // Set the stroke width
       fontFamily,
       fontSize: pixelFontSize,
       textAlign: 'center',
@@ -294,7 +294,7 @@ export async function titleFrameSource({ width, height, params }) {
     });
 
     // We need the text as an image in order to scale it
-    const textImage = await new Promise((r) => textBox.cloneAsImage(r));
+    const textImage = textBox.cloneAsImage();
 
     const { left, top, originX, originY } = getPositionProps({ position, width, height });
 
@@ -335,7 +335,7 @@ export async function newsTitleFrameSource({ width, height, params }) {
       fill: textColor,
       opacity: easedTextOpacityProgress,
       stroke: strokeColor, // Set the stroke color
-      strokeWidth: strokeWidth, // Set the stroke width
+      strokeWidth, // Set the stroke width
       fontFamily,
       fontSize: pixelFontSize,
       charSpacing: width * 0.1,
@@ -378,8 +378,8 @@ async function getFadedObject({ object, progress }) {
     ],
   }));
 
-  const gradientMaskImg = await new Promise((r) => rect.cloneAsImage(r));
-  const fadedImage = await new Promise((r) => object.cloneAsImage(r));
+  const gradientMaskImg = rect.cloneAsImage();
+  const fadedImage = object.cloneAsImage();
 
   fadedImage.filters.push(new fabric.Image.filters.BlendImage({
     image: gradientMaskImg,
@@ -429,4 +429,3 @@ export async function slideInTextFrameSource({ width, height, params: { position
 export async function customFabricFrameSource({ canvas, width, height, params }) {
   return params.func(({ width, height, fabric, canvas, params }));
 }
-

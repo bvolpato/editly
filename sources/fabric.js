@@ -1,5 +1,5 @@
-import { fabric } from 'fabric';
-import { createCanvas, ImageData } from 'canvas';
+import * as fabric from 'fabric/node';
+import { createCanvas, ImageData, registerFont as registerNodeCanvasFont } from 'canvas';
 
 import { boxBlurImage } from '../BoxBlur.js';
 
@@ -24,9 +24,8 @@ export function canvasToRgba(ctx) {
 }
 
 export function getNodeCanvasFromFabricCanvas(fabricCanvas) {
-  // https://github.com/fabricjs/fabric.js/blob/26e1a5b55cbeeffb59845337ced3f3f91d533d7d/src/static_canvas.class.js
-  // https://github.com/fabricjs/fabric.js/issues/3885
-  return fabric.util.getNodeCanvas(fabricCanvas.lowerCanvasEl);
+  // Fabric 7 removed fabric.util.getNodeCanvas; node canvas is available directly on the element.
+  return typeof fabricCanvas.getElement === 'function' ? fabricCanvas.getElement() : fabricCanvas.lowerCanvasEl;
 }
 
 export function fabricCanvasToRgba(fabricCanvas) {
@@ -112,7 +111,7 @@ export async function createCustomCanvasFrameSource({ width, height, params }) {
 }
 
 export function registerFont(...args) {
-  fabric.nodeCanvas.registerFont(...args);
+  registerNodeCanvasFont(...args);
 }
 
 export async function blurImage({ mutableImg, width, height }) {
