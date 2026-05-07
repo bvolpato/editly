@@ -8,6 +8,7 @@ module.exports = {
   },
   settings: {
     'import/extensions': ['.js'],
+    'import/core-modules': ['fabric/node'],
   },
   rules: {
     'max-len': 0,
