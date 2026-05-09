@@ -12,7 +12,7 @@
   "type": "module",
   "license": "MIT",
   "dependencies": {
-    "canvas": "^2.11.2",
+    "canvas": "^3.2.3",
     "compare-versions": "^4.1.4",
     "execa": "^6.1.0",
     "fabric": "^7.3.1",
@@ -25,7 +25,7 @@
     "gl-texture2d": "^2.1.0",
     "gl-transition": "^1.13.0",
     "gl-transitions": "^1.43.0",
-    "jsdom": "22.1.0",
+    "jsdom": "29.1.1",
     "json5": "^2.2.1",
     "lodash-es": "^4.17.21",
     "meow": "^10.1.3",
